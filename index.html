@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
@@ -17,8 +18,10 @@
 </head>
 <body class="bg-gray-100 min-h-screen text-gray-800">
   <div id="root"></div>
+
   <script type="text/babel">
     const { useState, useEffect } = React;
+
     const DEFAULT_QUOTE = {
       projectName: '裕信路',
       phone: '0912-345-678',
@@ -37,13 +40,37 @@
       customDiscountedTotal: 54000,
       salesSignature: 'Bella'
     };
+
     function App() {
       const [quote, setQuote] = useState(() => {
         const saved = localStorage.getItem('yunduo_current_quote');
         return saved ? JSON.parse(saved) : DEFAULT_QUOTE;
       });
+
       useEffect(() => {
         localStorage.setItem('yunduo_current_quote', JSON.stringify(quote));
       }, [quote]);
+
       const calculateSubtotal = () => quote.items.reduce((sum, item) => sum + (Number(item.qty || 0) * Number(item.price || 0)), 0);
-      const totalAmount = quote.customDiscountedTotal !== '' ? Number(quote
+      const totalAmount = quote.customDiscountedTotal !== '' ? Number(quote.customDiscountedTotal) : calculateSubtotal();
+
+      const handleItemChange = (id, field, value) => {
+        setQuote(prev => ({
+          ...prev,
+          items: prev.items.map(item => item.id === id ? { ...item, [field]: value } : item)
+        }));
+      };
+
+      const addItem = () => {
+        setQuote(prev => ({
+          ...prev,
+          items: [...prev.items, { id: Date.now().toString(), category: '', name: '', qty: 1, price: 0 }]
+        }));
+      };
+
+      const removeItem = (id) => {
+        setQuote(prev => ({ ...prev, items: prev.items.filter(item => item.id !== id) }));
+      };
+
+      const exportCSV = () => {
+        let csvContent = "\uFEFF案名,聯絡電話,地址,報價日期,業務,總金額,50%訂金\n
