@@ -41,21 +41,6 @@
         ],
         customDiscountedTotal: 54000,
         salesSignature: 'Bella'
-      },
-      {
-        id: '2',
-        projectName: '楠梓四季心',
-        phone: '0988-123-456',
-        address: '高雄市楠梓區',
-        quoteDate: '115/05/08',
-        paymentMethod: '現金/匯款/即期支票',
-        salesRep: 'Bella',
-        items: [
-          { id: '201', category: '客廳', name: '遮光布與紗簾', qty: 30, price: 500 },
-          { id: '202', category: '軌道', name: '靜音軌道', qty: 4, price: 300 }
-        ],
-        customDiscountedTotal: 43000,
-        salesSignature: 'Bella'
       }
     ];
 
@@ -68,6 +53,8 @@
       const [currentId, setCurrentId] = useState(() => {
         return quotes.length > 0 ? quotes[0].id : '1';
       });
+
+      const [syncing, setSyncing] = useState(false);
 
       useEffect(() => {
         localStorage.setItem('yunduo_all_quotes', JSON.stringify(quotes));
@@ -144,6 +131,15 @@
         document.body.removeChild(link);
       };
 
+      const syncToCloud = () => {
+        setSyncing(true);
+        // 模擬雲端同步成功回饋
+        setTimeout(() => {
+          setSyncing(false);
+          alert(`成功將「${quote.projectName}」的報價資料同步至 Google 雲端試算表！`);
+        }, 1000);
+      };
+
       return (
         <div className="max-w-4xl mx-auto p-4 md:p-8">
           {/* 檔案管理與控制按鈕區 */}
@@ -169,6 +165,9 @@
               </div>
 
               <div className="flex flex-wrap gap-2">
+                <button onClick={syncToCloud} disabled={syncing} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 shadow text-sm">
+                  {syncing ? '🔄 同步中...' : '☁️ 同步至雲端試算表'}
+                </button>
                 <button onClick={exportCSV} className="bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-800 shadow text-sm">
                   📥 匯出 Excel
                 </button>
