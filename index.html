@@ -34,7 +34,7 @@
         paymentMethod: '現金/匯款/即期支票',
         salesRep: 'Bella',
         items: [
-          { id: '101', floor: '一樓', space: '客廳', name: '100%物理遮光素色布', type: '無縫布', width: 7, height: 8.4, qty: 1, price: 360 },
+          { id: '101', floor: '一樓', space: '客廳', name: '100%物理遮光素色布', type: '無縫布', width: 6.5, height: 18.4, qty: 1, price: 360 },
           { id: '102', floor: '一樓', space: '客廳', name: '鋁合金M6手撥軌道', type: '軌道', width: 7, height: 0, qty: 1, price: 70 },
           { id: '103', floor: '二樓', space: '主臥', name: '高空梯安裝費用', type: '安裝費用', width: 0, height: 0, qty: 1, price: 3500 },
         ],
@@ -65,7 +65,7 @@
         setQuotes(quotes.map(q => q.id === currentId ? { ...q, ...updatedFields } : q));
       };
 
-      // 智慧計算單一品項金額
+      // 精準智慧計算單一品項金額（包含無縫布、挑高加倍規則）
       const calculateItemAmount = (item) => {
         const w = Number(item.width) || 0;
         const h = Number(item.height) || 0;
@@ -80,15 +80,22 @@
           const cals = Math.max(1, ceilW) * Math.max(1, ceilH);
           return cals * p;
         } else if (item.type === '無縫布' || item.type === '無縫紗') {
+          // 算式2：寬(進位) * 2 * 單價
           let base = ceilW * 2 * p;
-          if (h > 9) base *= 2;
+          // 超過9尺挑高：價格 x 2 倍
+          if (h > 9) {
+            base *= 2;
+          }
           return base;
         } else if (item.type === '五尺布' || item.type === '五尺紗') {
+          // 算式3：(寬(進位) + 1) * 2 * (單價 * 2)
           let base = (ceilW + 1) * 2 * (p * 2);
-          if (h > 9) base *= 2;
+          // 超過9尺挑高：價格 x 2 倍
+          if (h > 9) {
+            base *= 2;
+          }
           return base;
         } else if (item.type === '電機費用' || item.type === '安裝費用') {
-          // 單位 × 單價
           return q * p;
         } else {
           return ceilW * p;
@@ -105,7 +112,7 @@
       };
 
       const addItem = () => {
-        const newItems = [...quote.items, { id: Date.now().toString(), floor: '一樓', space: '客廳', name: '新窗簾品項', type: '無縫布', width: 6, height: 8, qty: 1, price: 360 }];
+        const newItems = [...quote.items, { id: Date.now().toString(), floor: '一樓', space: '客廳', name: '新窗簾品項', type: '無縫布', width: 6.5, height: 8.4, qty: 1, price: 360 }];
         updateCurrentQuote({ items: newItems });
       };
 
@@ -124,7 +131,7 @@
           quoteDate: new Date().toLocaleDateString('zh-TW', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '/'),
           paymentMethod: '現金/匯款/即期支票',
           salesRep: 'Bella',
-          items: [{ id: Date.now() + 1, floor: '一樓', space: '客廳', name: '遮光布', type: '無縫布', width: 6, height: 8, qty: 1, price: 360 }],
+          items: [{ id: Date.now() + 1, floor: '一樓', space: '客廳', name: '遮光布', type: '無縫布', width: 6.5, height: 8.4, qty: 1, price: 360 }],
           customDiscountedTotal: '',
           salesSignature: ''
         };
@@ -426,7 +433,7 @@
             {/* 匯款資訊與空白簽章區 */}
             <div className="pt-4 border-t-2 border-gray-400 text-sm flex justify-between items-end">
               <div className="space-y-1">
-                <p className="font-bold text-base text-gray-900">103 新光銀行 - 新營分行</p>
+                <p className="font-bold text-base text-gray-900">103新光銀行 - 新營分行</p>
                 <p className="text-gray-700 font-medium">戶名：畇朵家飾布企業社 ｜ 帳號：0541-10-1004306</p>
                 <p className="text-xs text-gray-500">（回傳付款帳號後五碼以利查詢，感謝您）</p>
               </div>
@@ -451,3 +458,4 @@
   </script>
 </body>
 </html>
+
