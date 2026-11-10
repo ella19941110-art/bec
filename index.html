@@ -65,7 +65,7 @@
         setQuotes(quotes.map(q => q.id === currentId ? { ...q, ...updatedFields } : q));
       };
 
-      // 精準智慧計算單一品項金額（包含無縫布、挑高加倍規則）
+      // 智慧計算單一品項金額
       const calculateItemAmount = (item) => {
         const w = Number(item.width) || 0;
         const h = Number(item.height) || 0;
@@ -80,20 +80,12 @@
           const cals = Math.max(1, ceilW) * Math.max(1, ceilH);
           return cals * p;
         } else if (item.type === '無縫布' || item.type === '無縫紗') {
-          // 算式2：寬(進位) * 2 * 單價
           let base = ceilW * 2 * p;
-          // 超過9尺挑高：價格 x 2 倍
-          if (h > 9) {
-            base *= 2;
-          }
+          if (h > 9) base *= 2;
           return base;
         } else if (item.type === '五尺布' || item.type === '五尺紗') {
-          // 算式3：(寬(進位) + 1) * 2 * (單價 * 2)
           let base = (ceilW + 1) * 2 * (p * 2);
-          // 超過9尺挑高：價格 x 2 倍
-          if (h > 9) {
-            base *= 2;
-          }
+          if (h > 9) base *= 2;
           return base;
         } else if (item.type === '電機費用' || item.type === '安裝費用') {
           return q * p;
@@ -278,7 +270,7 @@
               <thead>
                 <tr style={{ backgroundColor: '#c8b284' }} className="text-gray-900 font-bold">
                   <th className="border border-gray-400 p-2 w-20">樓層</th>
-                  <th className="border border-gray-400 p-2 w-20">空間</th>
+                  <th className="border border-gray-400 p-2 w-24">空間</th>
                   <th className="border border-gray-400 p-2 w-1/4">品名</th>
                   <th className="border border-gray-400 p-2 text-center w-14">寬</th>
                   <th className="border border-gray-400 p-2 text-center w-14">高</th>
@@ -292,6 +284,9 @@
                 {quote.items.map((item) => {
                   const isNoWidthHeight = item.type === '電機費用' || item.type === '安裝費用';
                   const isTrack = item.type === '軌道';
+                  const defaultSpaces = ['客廳', '餐廳', '廚房', '主臥', '房間', '書房', '孝親房', '女兒房', '兒子房'];
+                  const isCustomSpace = !defaultSpaces.includes(item.space);
+
                   return (
                     <tr key={item.id} className="hover:bg-amber-50/30">
                       {/* 樓層 */}
@@ -311,27 +306,38 @@
                         <span className="hidden print:inline text-xs">{item.floor}</span>
                       </td>
 
-                      {/* 空間 */}
+                      {/* 空間（支援下拉選單與自訂輸入） */}
                       <td className="border border-gray-400 p-1">
-                        <select 
-                          value={item.space} 
-                          onChange={e => handleItemChange(item.id, 'space', e.target.value)}
-                          className="w-full no-print bg-transparent font-medium text-gray-900 focus:outline-none text-xs"
-                        >
-                          <option value="客廳">客廳</option>
-                          <option value="餐廳">餐廳</option>
-                          <option value="廚房">廚房</option>
-                          <option value="主臥">主臥</option>
-                          <option value="房間">房間</option>
-                          <option value="書房">書房</option>
-                          <option value="孝親房">孝親房</option>
-                          <option value="女兒房">女兒房</option>
-                          <option value="兒子房">兒子房</option>
-                        </select>
+                        <div className="no-print space-y-1">
+                          <select 
+                            value={isCustomSpace ? 'custom' : item.space} 
+                            onChange={e => {
+                              const val = e.target.value;
+                              if (val === 'custom') {
+                                handleItemChange(item.id, 'space', '');
+                              } else {
+                                handleItemChange(item.id, 'space', val);
+                              }
+                            }}
+                            className="w-full bg-transparent font-medium text-gray-900 focus:outline-none text-xs"
+                          >
+                            {defaultSpaces.map(s => <option key={s} value={s}>{s}</option>)}
+                            <option value="custom">✏️ 自訂輸入...</option>
+                          </select>
+                          {(isCustomSpace || item.space === '') && (
+                            <input 
+                              type="text" 
+                              value={isCustomSpace ? item.space : ''} 
+                              onChange={e => handleItemChange(item.id, 'space', e.target.value)}
+                              placeholder="請輸入空間" 
+                              className="w-full text-xs border border-amber-300 rounded px-1 bg-white focus:outline-none"
+                            />
+                          )}
+                        </div>
                         <span className="hidden print:inline text-xs">{item.space}</span>
                       </td>
 
-                      {/* 品名與計算類型（計算類型於列印時隱藏） */}
+                      {/* 品名與計算類型 */}
                       <td className="border border-gray-400 p-2">
                         <input value={item.name} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full no-print bg-transparent focus:outline-none font-medium" placeholder="品名" />
                         <select 
@@ -433,7 +439,7 @@
             {/* 匯款資訊與空白簽章區 */}
             <div className="pt-4 border-t-2 border-gray-400 text-sm flex justify-between items-end">
               <div className="space-y-1">
-                <p className="font-bold text-base text-gray-900">103新光銀行 - 新營分行</p>
+                <p className="font-bold text-base text-gray-900">103 新光銀行 - 新營分行</p>
                 <p className="text-gray-700 font-medium">戶名：畇朵家飾布企業社 ｜ 帳號：0541-10-1004306</p>
                 <p className="text-xs text-gray-500">（回傳付款帳號後五碼以利查詢，感謝您）</p>
               </div>
@@ -458,4 +464,3 @@
   </script>
 </body>
 </html>
-
