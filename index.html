@@ -74,7 +74,12 @@
         return (
           <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 to-amber-50 p-4">
             <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-stone-200 space-y-6">
-              <div>
+              <div className="flex flex-col items-center">
+                <img 
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAACadoJwAAAACXBIWXMAAA7DAAAOwwHHb6bbAAAgAElEQVR4nOydd1gU19v23910N2zYsPeCBmOvCEbshqKCYkFRW7A37CV27E2x94p0W1GU3jsURBQEFSQ2u++M7O33zP3jnF1C9/vDnzfnxsyZueeWmWfuM75DURQlEomE/x//H81vA4rFgh404oJFIuW/mZycjN3/t7KzN3Xq1E6pVKqD3G6XnE5nK5lMdqVcLleS+11nC9vtcrlcJkZHRyfkcvkXkUgkE0ajUU4ul4vJ3Z2Z3MvEw8qVj0+k0m8m1bTf3W/777f+D8D70B9Lp3p7gAAAAAElFTkSuQmCC" 
+                  alt="畇朵窗飾規劃 LOGO" 
+                  className="w-36 h-auto mb-3" 
+                />
                 <h1 className="text-2xl md:text-3xl font-bold text-stone-900 tracking-wider">畇朵窗飾規劃</h1>
                 <p className="text-xs text-amber-800 tracking-widest mt-1">窗簾選畇朵 空間適得其所</p>
               </div>
@@ -273,50 +278,18 @@
             </div>
           </div>
 
-          {/* 報價單 A4 主體 (精緻 LOGO 與質感排版) */}
+          {/* 報價單 A4 主體 (完整去背原版 Logo 與質感排版) */}
           <div className="print-area bg-white p-6 sm:p-10 rounded-xl shadow-lg border border-stone-200">
             
-            {/* 🌟 精緻手繪風視窗 LOGO 與品牌標語 */}
+            {/* 🌟 完美去背的原版 Logo 與品牌文字區域 */}
             <div className="text-center pb-5 mb-6 border-b-2 border-stone-800 flex flex-col items-center">
-              <div className="w-40 sm:w-48 mb-2 text-[#735c44]">
-                <svg viewBox="0 0 320 220" className="w-full h-auto fill-current" xmlns="http://www.w3.org/2000/svg">
-                  {/* 窗桿 */}
-                  <rect x="50" y="20" width="220" height="6" rx="3" fill="#8c7355"/>
-                  <circle cx="45" cy="23" r="6" fill="#735c44"/>
-                  <circle cx="275" cy="23" r="6" fill="#735c44"/>
-                  
-                  {/* 左右窗簾背景遮罩與褶皺 */}
-                  <path d="M55,26 C75,60 85,130 75,190 C60,160 55,90 55,26 Z" fill="#bfae99" opacity="0.4"/>
-                  <path d="M75,26 C95,65 102,135 90,195 C75,160 70,90 75,26 Z" fill="#9e8a73" opacity="0.6"/>
-                  
-                  <path d="M265,26 C245,60 235,130 245,190 C260,160 265,90 265,26 Z" fill="#bfae99" opacity="0.4"/>
-                  <path d="M245,26 C225,65 218,135 230,195 C245,160 250,90 245,26 Z" fill="#9e8a73" opacity="0.6"/>
-
-                  {/* 窗戶本體外框 */}
-                  <rect x="95" y="35" width="130" height="140" fill="#fcfbfa" stroke="#735c44" stroke-width="4"/>
-                  <rect x="101" y="41" width="118" height="128" fill="none" stroke="#735c44" stroke-width="1.5"/>
-
-                  {/* 窗內風景：雲朵與小屋 */}
-                  <path d="M115,75 Q125,65 135,75 Q145,68 155,75 Z" fill="none" stroke="#8c7355" stroke-width="1.5" stroke-linecap="round"/>
-                  <path d="M175,85 Q185,75 195,85 Z" fill="none" stroke="#8c7355" stroke-width="1.5" stroke-linecap="round"/>
-                  
-                  <polygon points="180,140 180,120 195,105 210,120 210,140" fill="none" stroke="#8c7355" stroke-width="1.5"/>
-                  <rect x="190" y="125" width="10" height="15" fill="none" stroke="#8c7355" stroke-width="1.5"/>
-
-                  {/* 窗櫺十字格 */}
-                  <line x1="160" y1="41" x2="160" y2="169" stroke="#735c44" stroke-width="3"/>
-                  <line x1="101" y1="105" x2="219" y2="105" stroke="#735c44" stroke-width="3"/>
-
-                  {/* 綁帶與垂下窗簾 */}
-                  <path d="M55,26 C75,70 80,120 68,145 C65,110 60,70 55,26 Z" fill="#735c44"/>
-                  <path d="M265,26 C245,70 240,120 252,145 C255,110 260,70 265,26 Z" fill="#735c44"/>
-                  <ellipse cx="66" cy="143" rx="4" ry="6" fill="#594532"/>
-                  <ellipse cx="254" cy="143" rx="4" ry="6" fill="#594532"/>
-                </svg>
+              <div className="w-56 sm:w-64 mb-1">
+                <img 
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAACadoJwAAAACXBIWXMAAA7DAAAOwwHHb6bbAAAgAElEQVR4nOydd1gU19v23910N2zYsPeCBmOvCEbshqKCYkFRW7A37CV27E2x94p0W1GU3jsURBQEFSQ2u++M7O33zP3jnF1C9/vDnzfnxsyZueeWmWfuM75DURQlEomE/x//H81vA4rFgh404oJFIuW/mZycjN3/t7KzN3Xq1E6pVKqD3G6XnE5nK5lMdqVcLleS+11nC9vtcrlcJkZHRyfkcvkXkUgkE0ajUU4ul4vJ3Z2Z3MvEw8qVj0+k0m8m1bTf3W/777f+D8D70B9Lp3p7gAAAAAElFTkSuQmCC" 
+                  alt="畇朵窗飾規劃 LOGO" 
+                  className="w-full h-auto object-contain mx-auto" 
+                />
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-widest text-stone-900 mt-2">畇朵窗飾規劃</h1>
-              <p className="text-xs sm:text-sm tracking-wider text-amber-800 font-medium mt-1">Cloud Window treatments planning</p>
-              <p className="text-xs tracking-widest text-stone-500 mt-1">窗簾選畇朵 ｜ 空間適得其所</p>
             </div>
 
             {/* 客戶基本資料 */}
