@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>畇朵家飾 雲端報價系統</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -12,7 +12,9 @@
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; padding: 0 !important; }
-      .print-area { border: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
+      .print-area { border: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 0 !important; }
+      .mobile-card-view { display: none !important; }
+      .desktop-table-view { display: table !important; }
     }
   </style>
 </head>
@@ -25,9 +27,7 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby85W4jwh67qbZHOifLiRrkYjk96BD2YeUdFv-AXSGgXZWLKH2teiXZxc6eHWsV35jUfw/exec";
 
     function App() {
-      // 預設為 null，每次重新整理或進入都會先顯示首頁選擇畫面
       const [sales, setSales] = useState(null);
-
       const STORAGE_KEY = sales ? `yunduo_quotes_${sales}` : 'yunduo_all_quotes';
 
       const [quotes, setQuotes] = useState([]);
@@ -65,29 +65,29 @@
         setSales(null);
       };
 
-      // 如果尚未選擇業務，顯示首頁選擇畫面
+      // 首頁雙業務選擇畫面
       if (!sales) {
         return (
           <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100 p-4">
-            <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-amber-200 space-y-6">
-              <h1 className="text-3xl font-bold text-amber-950 tracking-wider">畇朵家飾 報價系統</h1>
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-amber-200 space-y-6">
+              <h1 className="text-2xl md:text-3xl font-bold text-amber-950 tracking-wider">畇朵家飾 報價系統</h1>
               <p className="text-gray-600 text-sm">請點擊選擇您的業務專區以開始作業：</p>
               
               <div className="space-y-4 pt-2">
                 <button 
                   onClick={() => selectSales('Bella')}
-                  className="w-full py-4 bg-amber-700 text-white font-bold text-lg rounded-xl shadow-md hover:bg-amber-800 transition duration-200 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-amber-700 text-white font-bold text-lg rounded-xl shadow-md hover:bg-amber-800 transition duration-200 flex items-center justify-center gap-2 active:scale-95"
                 >
                   👩‍💼 Bella 專區
                 </button>
                 <button 
                   onClick={() => selectSales('夥伴')}
-                  className="w-full py-4 bg-amber-900 text-white font-bold text-lg rounded-xl shadow-md hover:bg-amber-950 transition duration-200 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-amber-900 text-white font-bold text-lg rounded-xl shadow-md hover:bg-amber-950 transition duration-200 flex items-center justify-center gap-2 active:scale-95"
                 >
                   🧑‍💼 夥伴業務專區
                 </button>
               </div>
-              <p className="text-xs text-gray-400 pt-4">系統會自動隔離雙方資料，確保帳務與客戶獨立管理</p>
+              <p className="text-xs text-gray-400 pt-2">獨立記憶資料 ｜ 支援手機/平板雙模式</p>
             </div>
           </div>
         );
@@ -214,7 +214,7 @@
         })
         .then(() => {
           setSyncing(false);
-          alert(`🎉 成功將「${quote.projectName}」的報價資料同步上傳至 Google 雲端試算表！`);
+          alert(`🎉 成功將「${quote.projectName}」上傳至 Google 雲端總表！`);
         })
         .catch(err => {
           setSyncing(false);
@@ -223,45 +223,46 @@
         });
       };
 
+      const defaultSpaces = ['客廳', '餐廳', '廚房', '主臥', '房間', '書房', '孝親房', '女兒房', '兒子房'];
+
       return (
-        <div className="max-w-4xl mx-auto p-4 md:p-8">
+        <div className="max-w-4xl mx-auto p-2 sm:p-4 md:p-8">
           {/* 檔案管理與控制按鈕區 */}
-          <div className="no-print mb-6 bg-white p-4 rounded-xl shadow-sm border border-amber-100 space-y-3">
-            <div className="flex flex-wrap justify-between items-center gap-3">
-              <div className="flex items-center gap-2">
+          <div className="no-print mb-4 bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-amber-100 space-y-3">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <button onClick={backToHome} className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-gray-300">
                   🏠 首頁
                 </button>
-                <span className="text-xs bg-amber-100 text-amber-900 font-bold px-2 py-1 rounded">👤 {sales}專區</span>
-                <span className="font-bold text-amber-900 text-sm">📁 案名：</span>
+                <span className="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-1.5 rounded-lg">👤 {sales}專區</span>
                 <select 
                   value={currentId} 
                   onChange={e => setCurrentId(e.target.value)}
-                  className="border border-amber-300 rounded-lg px-3 py-1.5 font-medium bg-amber-50 text-amber-950 focus:outline-none"
+                  className="border border-amber-300 rounded-lg px-2.5 py-1.5 text-sm font-medium bg-amber-50 text-amber-950 focus:outline-none flex-1 sm:flex-none"
                 >
                   {quotes.map(q => (
                     <option key={q.id} value={q.id}>{q.projectName} ({q.quoteDate})</option>
                   ))}
                 </select>
                 <button onClick={addNewQuoteFile} className="bg-amber-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-amber-700 shadow">
-                  ＋ 新增案子
+                  ＋ 新增
                 </button>
-                <button onClick={deleteCurrentQuote} className="bg-rose-100 text-rose-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-rose-200">
-                  🗑️ 刪除
+                <button onClick={deleteCurrentQuote} className="bg-rose-100 text-rose-700 px-2.5 py-1.5 rounded-lg text-sm font-medium hover:bg-rose-200">
+                  🗑️
                 </button>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                <button onClick={syncToCloud} disabled={syncing} className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 shadow text-sm">
-                  {syncing ? '🔄 同步中...' : '☁️ 同步至雲端試算表'}
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 pt-1 sm:pt-0">
+                <button onClick={syncToCloud} disabled={syncing} className="bg-blue-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-blue-700 shadow text-xs sm:text-sm">
+                  {syncing ? '🔄 同步中...' : '☁️ 雲端同步'}
                 </button>
-                <button onClick={exportCSV} className="bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-800 shadow text-sm">
+                <button onClick={exportCSV} className="bg-emerald-700 text-white px-3 py-2 rounded-lg font-medium hover:bg-emerald-800 shadow text-xs sm:text-sm">
                   📥 匯出 Excel
                 </button>
-                <button onClick={addItem} className="bg-amber-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-amber-700 shadow text-sm">
+                <button onClick={addItem} className="bg-amber-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-amber-700 shadow text-xs sm:text-sm">
                   ➕ 新增品項
                 </button>
-                <button onClick={() => window.print()} className="bg-amber-800 text-white px-5 py-2 rounded-lg font-medium hover:bg-amber-900 shadow text-sm">
+                <button onClick={() => window.print()} className="bg-amber-800 text-white px-3 py-2 rounded-lg font-medium hover:bg-amber-900 shadow text-xs sm:text-sm">
                   🖨️ 列印 / PDF
                 </button>
               </div>
@@ -269,42 +270,132 @@
           </div>
 
           {/* 報價單 A4 主體 */}
-          <div className="print-area bg-white p-8 rounded-lg shadow-lg border border-gray-200">
-            <h2 className="text-2xl font-bold text-center tracking-widest mb-6 pb-2 border-b-2 border-amber-800 text-amber-950">
+          <div className="print-area bg-white p-4 sm:p-8 rounded-xl shadow-lg border border-gray-200">
+            <h2 className="text-xl sm:text-2xl font-bold text-center tracking-widest mb-4 sm:mb-6 pb-2 border-b-2 border-amber-800 text-amber-950">
               畇朵報價單
             </h2>
 
             {/* 客戶基本資料 */}
-            <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6 text-sm">
               <div className="space-y-2">
                 <p><span className="font-bold text-gray-700">案名：</span>
-                  <input value={quote.projectName || ''} onChange={e => updateCurrentQuote({ projectName: e.target.value })} className="no-print border-b px-1 w-48 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
+                  <input value={quote.projectName || ''} onChange={e => updateCurrentQuote({ projectName: e.target.value })} className="no-print border-b px-1 w-40 sm:w-48 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
                   <span className="hidden print:inline">{quote.projectName}</span>
                 </p>
-                <p><span className="font-bold text-gray-700">聯絡電話：</span>
-                  <input value={quote.phone || ''} onChange={e => updateCurrentQuote({ phone: e.target.value })} className="no-print border-b px-1 w-48 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
+                <p><span className="font-bold text-gray-700">電話：</span>
+                  <input value={quote.phone || ''} onChange={e => updateCurrentQuote({ phone: e.target.value })} className="no-print border-b px-1 w-40 sm:w-48 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
                   <span className="hidden print:inline">{quote.phone}</span>
                 </p>
                 <p><span className="font-bold text-gray-700">地址：</span>
-                  <input value={quote.address || ''} onChange={e => updateCurrentQuote({ address: e.target.value })} className="no-print border-b px-1 w-64 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
+                  <input value={quote.address || ''} onChange={e => updateCurrentQuote({ address: e.target.value })} className="no-print border-b px-1 w-48 sm:w-64 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
                   <span className="hidden print:inline">{quote.address}</span>
                 </p>
               </div>
               <div className="space-y-2">
-                <p><span className="font-bold text-gray-700">報價日期：</span>
-                  <input value={quote.quoteDate || ''} onChange={e => updateCurrentQuote({ quoteDate: e.target.value })} className="no-print border-b px-1 w-36 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
+                <p><span className="font-bold text-gray-700">日期：</span>
+                  <input value={quote.quoteDate || ''} onChange={e => updateCurrentQuote({ quoteDate: e.target.value })} className="no-print border-b px-1 w-32 sm:w-36 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
                   <span className="hidden print:inline">{quote.quoteDate}</span>
                 </p>
-                <p><span className="font-bold text-gray-700">付款方式：</span>{quote.paymentMethod}</p>
-                <p><span className="font-bold text-gray-700">承辦業務：</span>
-                  <input value={quote.salesRep || sales} onChange={e => updateCurrentQuote({ salesRep: e.target.value })} className="no-print border-b px-1 w-36 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
+                <p><span className="font-bold text-gray-700">付款：</span>{quote.paymentMethod}</p>
+                <p><span className="font-bold text-gray-700">業務：</span>
+                  <input value={quote.salesRep || sales} onChange={e => updateCurrentQuote({ salesRep: e.target.value })} className="no-print border-b px-1 w-32 sm:w-36 font-medium text-gray-900 focus:outline-none focus:border-amber-700" />
                   <span className="hidden print:inline">{quote.salesRep || sales}</span>
                 </p>
               </div>
             </div>
 
-            {/* 品項明細表格 */}
-            <table className="w-full border-collapse border border-gray-400 mb-6 text-sm">
+            {/* 📱 手機專屬卡片排版 (僅在手機螢幕顯示) */}
+            <div className="block md:hidden space-y-3 mb-6 no-print mobile-card-view">
+              {(quote.items || []).map((item, idx) => {
+                const isNoWidthHeight = item.type === '電機費用' || item.type === '安裝費用';
+                const isTrack = item.type === '軌道';
+                const isCustomSpace = !defaultSpaces.includes(item.space);
+
+                return (
+                  <div key={item.id} className="bg-amber-50/40 p-3 rounded-xl border border-amber-200/60 relative space-y-2">
+                    <div className="flex justify-between items-center pb-1 border-b border-amber-200/40">
+                      <span className="font-bold text-amber-900 text-xs">#{idx + 1} 品項</span>
+                      <button onClick={() => removeItem(item.id)} className="text-red-500 font-bold px-2 py-0.5 rounded text-xs bg-white border border-red-200">
+                        刪除 ✕
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <label className="text-gray-500 block mb-0.5">樓層</label>
+                        <select value={item.floor || '一樓'} onChange={e => handleItemChange(item.id, 'floor', e.target.value)} className="w-full bg-white border border-gray-300 rounded px-1.5 py-1">
+                          <option value="無樓層">無樓層</option>
+                          <option value="一樓">一樓</option>
+                          <option value="二樓">二樓</option>
+                          <option value="三樓">三樓</option>
+                          <option value="四樓">四樓</option>
+                          <option value="五樓">五樓</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-gray-500 block mb-0.5">空間</label>
+                        <select 
+                          value={isCustomSpace ? 'custom' : (item.space || '客廳')} 
+                          onChange={e => handleItemChange(item.id, 'space', e.target.value === 'custom' ? '' : e.target.value)}
+                          className="w-full bg-white border border-gray-300 rounded px-1.5 py-1"
+                        >
+                          {defaultSpaces.map(s => <option key={s} value={s}>{s}</option>)}
+                          <option value="custom">✏️ 自訂...</option>
+                        </select>
+                        {(isCustomSpace || item.space === '') && (
+                          <input type="text" value={isCustomSpace ? item.space : ''} onChange={e => handleItemChange(item.id, 'space', e.target.value)} placeholder="輸入空間" className="w-full mt-1 border rounded px-1 bg-white" />
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-gray-500 block text-xs mb-0.5">品名與算式</label>
+                      <input value={item.name || ''} onChange={e => handleItemChange(item.id, 'name', e.target.value)} placeholder="請輸入品名" className="w-full bg-white border border-gray-300 rounded px-2 py-1 text-sm font-medium mb-1" />
+                      <select value={item.type || '無縫布'} onChange={e => handleItemChange(item.id, 'type', e.target.value)} className="w-full bg-amber-100/70 text-amber-950 font-semibold rounded px-1.5 py-1 text-xs">
+                        <option value="無縫布">無縫布/紗 (算式2)</option>
+                        <option value="五尺布">五尺布/紗 (算式3)</option>
+                        <option value="捲簾/百葉類">捲簾/百葉 (算式1)</option>
+                        <option value="軌道">軌道 (僅寬×單價)</option>
+                        <option value="電機費用">電機費用 (單位×單價)</option>
+                        <option value="安裝費用">安裝費用 (單位×單價)</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-1.5 pt-1 text-xs">
+                      <div>
+                        <label className="text-gray-500 block text-center">寬(尺)</label>
+                        {!isNoWidthHeight ? (
+                          <input type="number" step="0.1" value={item.width ?? ''} onChange={e => handleItemChange(item.id, 'width', e.target.value)} className="w-full text-center bg-white border rounded py-1" />
+                        ) : <div className="text-center py-1 text-gray-300">-</div>}
+                      </div>
+                      <div>
+                        <label className="text-gray-500 block text-center">高(尺)</label>
+                        {!isNoWidthHeight && !isTrack ? (
+                          <input type="number" step="0.1" value={item.height ?? ''} onChange={e => handleItemChange(item.id, 'height', e.target.value)} className="w-full text-center bg-white border rounded py-1" />
+                        ) : <div className="text-center py-1 text-gray-300">-</div>}
+                      </div>
+                      <div>
+                        <label className="text-gray-500 block text-center">單位</label>
+                        {isNoWidthHeight ? (
+                          <input type="number" value={item.qty ?? 1} onChange={e => handleItemChange(item.id, 'qty', e.target.value)} className="w-full text-center bg-amber-100 border rounded py-1 font-bold" />
+                        ) : <div className="text-center py-1 text-gray-300">-</div>}
+                      </div>
+                      <div>
+                        <label className="text-gray-500 block text-center">單價</label>
+                        <input type="number" value={item.price ?? ''} onChange={e => handleItemChange(item.id, 'price', e.target.value)} className="w-full text-right bg-white border rounded py-1 px-1" />
+                      </div>
+                    </div>
+
+                    <div className="text-right pt-1 font-bold text-amber-950 text-sm border-t border-amber-200/40">
+                      小計：${calculateItemAmount(item).toLocaleString()}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 🖥️/🖨️ 平板與列印專用表格 (電腦、平板與 PDF 匯出時顯示) */}
+            <table className="w-full border-collapse border border-gray-400 mb-6 text-sm hidden md:table desktop-table-view">
               <thead>
                 <tr style={{ backgroundColor: '#c8b284' }} className="text-gray-900 font-bold">
                   <th className="border border-gray-400 p-2 w-20">樓層</th>
@@ -322,18 +413,12 @@
                 {(quote.items || []).map((item) => {
                   const isNoWidthHeight = item.type === '電機費用' || item.type === '安裝費用';
                   const isTrack = item.type === '軌道';
-                  const defaultSpaces = ['客廳', '餐廳', '廚房', '主臥', '房間', '書房', '孝親房', '女兒房', '兒子房'];
                   const isCustomSpace = !defaultSpaces.includes(item.space);
 
                   return (
                     <tr key={item.id} className="hover:bg-amber-50/30">
-                      {/* 樓層 */}
                       <td className="border border-gray-400 p-1">
-                        <select 
-                          value={item.floor || '一樓'} 
-                          onChange={e => handleItemChange(item.id, 'floor', e.target.value)}
-                          className="w-full no-print bg-transparent font-medium text-gray-900 focus:outline-none text-xs"
-                        >
+                        <select value={item.floor || '一樓'} onChange={e => handleItemChange(item.id, 'floor', e.target.value)} className="w-full no-print bg-transparent font-medium text-gray-900 focus:outline-none text-xs">
                           <option value="無樓層">無樓層</option>
                           <option value="一樓">一樓</option>
                           <option value="二樓">二樓</option>
@@ -344,45 +429,22 @@
                         <span className="hidden print:inline text-xs">{item.floor}</span>
                       </td>
 
-                      {/* 空間 */}
                       <td className="border border-gray-400 p-1">
                         <div className="no-print space-y-1">
-                          <select 
-                            value={isCustomSpace ? 'custom' : (item.space || '客廳')} 
-                            onChange={e => {
-                              const val = e.target.value;
-                              if (val === 'custom') {
-                                handleItemChange(item.id, 'space', '');
-                              } else {
-                                handleItemChange(item.id, 'space', val);
-                              }
-                            }}
-                            className="w-full bg-transparent font-medium text-gray-900 focus:outline-none text-xs"
-                          >
+                          <select value={isCustomSpace ? 'custom' : (item.space || '客廳')} onChange={e => handleItemChange(item.id, 'space', e.target.value === 'custom' ? '' : e.target.value)} className="w-full bg-transparent font-medium text-gray-900 focus:outline-none text-xs">
                             {defaultSpaces.map(s => <option key={s} value={s}>{s}</option>)}
-                            <option value="custom">✏️ 自訂輸入...</option>
+                            <option value="custom">✏️ 自訂...</option>
                           </select>
                           {(isCustomSpace || item.space === '') && (
-                            <input 
-                              type="text" 
-                              value={isCustomSpace ? item.space : ''} 
-                              onChange={e => handleItemChange(item.id, 'space', e.target.value)}
-                              placeholder="請輸入空間" 
-                              className="w-full text-xs border border-amber-300 rounded px-1 bg-white focus:outline-none"
-                            />
+                            <input type="text" value={isCustomSpace ? item.space : ''} onChange={e => handleItemChange(item.id, 'space', e.target.value)} placeholder="輸入空間" className="w-full text-xs border rounded px-1 bg-white focus:outline-none" />
                           )}
                         </div>
                         <span className="hidden print:inline text-xs">{item.space}</span>
                       </td>
 
-                      {/* 品名與計算類型 */}
                       <td className="border border-gray-400 p-2">
                         <input value={item.name || ''} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full no-print bg-transparent focus:outline-none font-medium" placeholder="品名" />
-                        <select 
-                          value={item.type || '無縫布'} 
-                          onChange={e => handleItemChange(item.id, 'type', e.target.value)}
-                          className="w-full no-print bg-amber-50 text-amber-900 rounded px-1 mt-1 font-semibold focus:outline-none text-[11px]"
-                        >
+                        <select value={item.type || '無縫布'} onChange={e => handleItemChange(item.id, 'type', e.target.value)} className="w-full no-print bg-amber-50 text-amber-900 rounded px-1 mt-1 font-semibold focus:outline-none text-[11px]">
                           <option value="無縫布">無縫布/紗 (算式2)</option>
                           <option value="五尺布">五尺布/紗 (算式3)</option>
                           <option value="捲簾/百葉類">捲簾/百葉 (算式1)</option>
@@ -393,7 +455,6 @@
                         <span className="hidden print:inline font-medium">{item.name}</span>
                       </td>
 
-                      {/* 寬 */}
                       <td className="border border-gray-400 p-2 text-center">
                         {!isNoWidthHeight ? (
                           <>
@@ -403,7 +464,6 @@
                         ) : <span className="text-gray-300">-</span>}
                       </td>
 
-                      {/* 高 */}
                       <td className="border border-gray-400 p-2 text-center">
                         {!isNoWidthHeight && !isTrack ? (
                           <>
@@ -413,7 +473,6 @@
                         ) : <span className="text-gray-300">-</span>}
                       </td>
 
-                      {/* 單位 */}
                       <td className="border border-gray-400 p-2 text-center">
                         {isNoWidthHeight ? (
                           <>
@@ -423,18 +482,15 @@
                         ) : <span className="text-gray-300">-</span>}
                       </td>
 
-                      {/* 單價 */}
                       <td className="border border-gray-400 p-2 text-right">
                         <input type="number" value={item.price ?? ''} onChange={e => handleItemChange(item.id, 'price', e.target.value)} className="w-16 text-right no-print bg-transparent focus:outline-none" />
                         <span className="hidden print:inline">{Number(item.price || 0).toLocaleString()}</span>
                       </td>
 
-                      {/* 金額 */}
                       <td className="border border-gray-400 p-2 text-right font-medium">
                         {calculateItemAmount(item).toLocaleString()}
                       </td>
 
-                      {/* 刪除動作 */}
                       <td className="border border-gray-400 p-1 text-center no-print">
                         <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700 font-bold">✕</button>
                       </td>
@@ -445,8 +501,8 @@
             </table>
 
             {/* 金額與條款 */}
-            <div className="grid grid-cols-3 border border-gray-400 text-xs mb-6">
-              <div className="col-span-2 p-3 border-r border-gray-400 bg-gray-50 leading-relaxed">
+            <div className="grid grid-cols-1 md:grid-cols-3 border border-gray-400 text-xs mb-6">
+              <div className="md:col-span-2 p-3 border-b md:border-b-0 md:border-r border-gray-400 bg-gray-50 leading-relaxed">
                 <p className="font-bold text-sm mb-1 text-gray-900">為確保雙方權益及服務品質，相關合作條款如下：</p>
                 <ol className="list-decimal list-inside space-y-1 text-gray-700">
                   <li>付款方式：僅提供現金、匯款或即期支票。</li>
@@ -456,7 +512,7 @@
                   <li>報價有效期限制：本報價單自開立日起有效 14 天。</li>
                 </ol>
               </div>
-              <div className="col-span-1 flex flex-col justify-between">
+              <div className="md:col-span-1 flex flex-col justify-between">
                 <div className="flex justify-between p-3 border-b border-gray-400 font-bold bg-amber-100/50 text-sm">
                   <span>總計：</span>
                   <span>${calculateSubtotal().toLocaleString()}</span>
@@ -475,20 +531,20 @@
             </div>
 
             {/* 匯款資訊與空白簽章區 */}
-            <div className="pt-4 border-t-2 border-gray-400 text-sm flex justify-between items-end">
+            <div className="pt-4 border-t-2 border-gray-400 text-sm flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
               <div className="space-y-1">
                 <p className="font-bold text-base text-gray-900">103 新光銀行 - 新營分行</p>
                 <p className="text-gray-700 font-medium">戶名：畇朵家飾布企業社 ｜ 帳號：0541-10-1004306</p>
                 <p className="text-xs text-gray-500">（回傳付款帳號後五碼以利查詢，感謝您）</p>
               </div>
-              <div className="flex gap-6 text-center text-gray-900 font-bold">
-                <div className="border border-gray-300 p-4 rounded-lg bg-gray-50 min-w-[160px]">
-                  <p className="mb-10 text-xs text-gray-500 font-normal">公司業務簽章</p>
-                  <p className="text-base text-gray-300 font-normal">（請在此簽名）</p>
+              <div className="flex gap-4 sm:gap-6 text-center text-gray-900 font-bold w-full sm:w-auto justify-between sm:justify-end">
+                <div className="border border-gray-300 p-3 sm:p-4 rounded-lg bg-gray-50 flex-1 sm:flex-none min-w-[140px] sm:min-w-[160px]">
+                  <p className="mb-8 sm:mb-10 text-xs text-gray-500 font-normal">公司業務簽章</p>
+                  <p className="text-sm sm:text-base text-gray-300 font-normal">（請在此簽名）</p>
                 </div>
-                <div className="border border-gray-300 p-4 rounded-lg bg-gray-50 min-w-[160px]">
-                  <p className="mb-10 text-xs text-gray-500 font-normal">客戶簽章</p>
-                  <p className="text-base text-gray-300 font-normal">（請在此簽名）</p>
+                <div className="border border-gray-300 p-3 sm:p-4 rounded-lg bg-gray-50 flex-1 sm:flex-none min-w-[140px] sm:min-w-[160px]">
+                  <p className="mb-8 sm:mb-10 text-xs text-gray-500 font-normal">客戶簽章</p>
+                  <p className="text-sm sm:text-base text-gray-300 font-normal">（請在此簽名）</p>
                 </div>
               </div>
             </div>
