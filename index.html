@@ -25,47 +25,18 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby85W4jwh67qbZHOifLiRrkYjk96BD2YeUdFv-AXSGgXZWLKH2teiXZxc6eHWsV35jUfw/exec";
 
     function App() {
-      // 記錄目前登入的業務：null 代表在首頁，'Bella' 或 '夥伴' 代表進入專區
-      const [sales, setSales] = useState(() => localStorage.getItem('yunduo_current_sales') || null);
+      // 預設為 null，每次重新整理或進入都會先顯示首頁選擇畫面
+      const [sales, setSales] = useState(null);
 
       const STORAGE_KEY = sales ? `yunduo_quotes_${sales}` : 'yunduo_all_quotes';
 
-      const DEFAULT_QUOTES = [
-        {
-          id: '1',
-          projectName: '裕信路',
-          phone: '0912-345-678',
-          address: '臺南市東區裕信路',
-          quoteDate: '115/11/06',
-          paymentMethod: '現金/匯款/即期支票',
-          salesRep: sales || 'Bella',
-          items: [
-            { id: '101', floor: '一樓', space: '客廳', name: '100%物理遮光素色布', type: '無縫布', width: 6.5, height: 8.4, qty: 1, price: 360 },
-            { id: '102', floor: '一樓', space: '客廳', name: '鋁合金M6手撥軌道', type: '軌道', width: 7, height: 0, qty: 1, price: 70 },
-          ],
-          customDiscountedTotal: '',
-          salesSignature: ''
-        }
-      ];
-
-      const [quotes, setQuotes] = useState(() => {
-        if (!sales) return [];
-        const saved = localStorage.getItem(STORAGE_KEY);
-        return saved ? JSON.parse(saved) : DEFAULT_QUOTES;
-      });
-
-      const [currentId, setCurrentId] = useState(() => {
-        return quotes.length > 0 ? quotes[0].id : '';
-      });
-
+      const [quotes, setQuotes] = useState([]);
+      const [currentId, setCurrentId] = useState('');
       const [syncing, setSyncing] = useState(false);
 
       useEffect(() => {
         if (sales) {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(quotes));
-          localStorage.setItem('yunduo_current_sales', sales);
-        } else {
-          localStorage.removeItem('yunduo_current_sales');
         }
       }, [quotes, sales]);
 
@@ -81,7 +52,7 @@
             quoteDate: new Date().toLocaleDateString('zh-TW', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '/'),
             paymentMethod: '現金/匯款/即期支票',
             salesRep: salesName,
-            items: [{ id: Date.now(), floor: '一樓', space: '客廳', name: '遮光布', type: '無縫布', width: 6, height: 8, qty: 1, price: 360 }],
+            items: [{ id: Date.now(), floor: '一樓', space: '客廳', name: '遮光布', type: '無縫布', width: 6.5, height: 8.4, qty: 1, price: 360 }],
             customDiscountedTotal: '',
             salesSignature: ''
           }
