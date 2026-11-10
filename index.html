@@ -36,7 +36,7 @@
         items: [
           { id: '101', floor: '一樓', space: '客廳', name: '100%物理遮光素色布', type: '無縫布', width: 6.5, height: 18.4, qty: 1, price: 360 },
           { id: '102', floor: '一樓', space: '客廳', name: '鋁合金M6手撥軌道', type: '軌道', width: 7, height: 0, qty: 1, price: 70 },
-          { id: '103', floor: '二樓', space: '主臥', name: '高空梯安裝費用', type: '安裝費用', width: 0, height: 0, qty: 1, price: 3500 },
+          { id: '103', floor: '二樓', space: '主臥', name: '五尺經典提花布', type: '五尺布', width: 6.5, height: 10, qty: 1, price: 260 },
         ],
         customDiscountedTotal: '',
         salesSignature: ''
@@ -80,13 +80,15 @@
           const cals = Math.max(1, ceilW) * Math.max(1, ceilH);
           return cals * p;
         } else if (item.type === '無縫布' || item.type === '無縫紗') {
+          // 算式2：寬(進位) * 2 * 單價 (超過9尺挑高：價格 x 2 倍)
           let base = ceilW * 2 * p;
           if (h > 9) base *= 2;
           return base;
         } else if (item.type === '五尺布' || item.type === '五尺紗') {
-          let base = (ceilW + 1) * 2 * (p * 2);
-          if (h > 9) base *= 2;
-          return base;
+          // 算式3：【(寬 / 2.5) 無條件進位】 * (高無條件進位 + 1) * 單價 (不參與超過九尺x2的條件)
+          const panels = Math.ceil(w / 2.5);
+          const heightFactor = ceilH + 1;
+          return panels * heightFactor * p;
         } else if (item.type === '電機費用' || item.type === '安裝費用') {
           return q * p;
         } else {
@@ -306,7 +308,7 @@
                         <span className="hidden print:inline text-xs">{item.floor}</span>
                       </td>
 
-                      {/* 空間（支援下拉選單與自訂輸入） */}
+                      {/* 空間 */}
                       <td className="border border-gray-400 p-1">
                         <div className="no-print space-y-1">
                           <select 
