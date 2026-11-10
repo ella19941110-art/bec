@@ -14,9 +14,20 @@
       margin: 8mm 10mm;
     }
     @media print {
+      @page { margin: 0; }
+      body {
+        margin: 10mm !important;
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+      }
       .no-print { display: none !important; }
-      body { background: white !important; padding: 0 !important; -webkit-print-color-adjust: exact; }
-      .print-area { border: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 0 !important; }
+      .print-area {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+      }
       .mobile-card-view { display: none !important; }
       .desktop-table-view { display: table !important; }
     }
@@ -283,7 +294,7 @@
             </div>
           </div>
 
-          {/* 報價單 A4 主體 (舒展寬鬆、完美單頁排版) */}
+          {/* 報價單 A4 主體 (寬鬆舒展、完美單頁) */}
           <div className="print-area bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-stone-200 space-y-5">
             
             {/* 品牌標題區 */}
@@ -558,11 +569,12 @@
               </div>
             </div>
 
-            {/* 底部聯絡資訊（含戶名：畇朵家飾布企業社）與簽章區 */}
-            <div className="pt-3 border-t-2 border-stone-400 text-sm flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-              <div className="space-y-1 text-stone-700 text-xs sm:text-sm">
+            {/* 底部聯絡資訊與簽章區（已修正黃色標記的擠壓排版，改為左右兩欄寬鬆對齊） */}
+            <div className="pt-4 border-t-2 border-stone-400 text-sm grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+              {/* 左側：可編輯聯絡與銀行資訊 */}
+              <div className="space-y-1.5 text-stone-700 text-xs sm:text-sm">
                 <p className="font-bold text-stone-900 flex items-center gap-1">
-                  <span>畇朵窗飾規劃 ｜ 窗飾規劃師：</span>
+                  <span>畇朵窗飾規劃 ｜ 規劃師：</span>
                   <input 
                     value={quote.salesRep || sales} 
                     onChange={e => updateCurrentQuote({ salesRep: e.target.value })} 
@@ -571,7 +583,10 @@
                   <span className="hidden print:inline">{quote.salesRep || sales}</span>
                 </p>
                 <p className="flex items-center gap-1">
-                  <span>📍 臺南市永康區六合路99號 ｜ 📞 電話：</span>
+                  <span>📍 臺南市永康區六合路99號</span>
+                </p>
+                <p className="flex items-center gap-1">
+                  <span>📞 電話：</span>
                   <input 
                     value={quote.salesPhone ?? '0978-221-726'} 
                     onChange={e => updateCurrentQuote({ salesPhone: e.target.value })} 
@@ -579,7 +594,7 @@
                   />
                   <span className="hidden print:inline">{quote.salesPhone ?? '0978-221-726'}</span>
                 </p>
-                <p className="flex items-center gap-1 flex-wrap">
+                <p className="flex items-center gap-1">
                   <span>💬 LINE：</span>
                   <input 
                     value={quote.salesLine ?? 'bella19941110'} 
@@ -588,18 +603,19 @@
                   />
                   <span className="hidden print:inline">{quote.salesLine ?? 'bella19941110'}</span>
                 </p>
-                <p className="font-medium text-stone-800">
-                  🏦 戶名：畇朵家飾布企業社 ｜ 103 新光銀行新營分行 (0541-10-1004306)
+                <p className="font-medium text-stone-800 pt-0.5">
+                  🏦 戶名：畇朵家飾布企業社 ｜ 新光銀行新營分行 (103) 0541-10-1004306
                 </p>
               </div>
 
-              <div className="flex gap-4 sm:gap-6 text-center text-stone-900 font-bold w-full sm:w-auto justify-between sm:justify-end">
-                <div className="border border-stone-300 p-3 sm:p-4 rounded-lg bg-stone-50 flex-1 sm:flex-none min-w-[120px]">
-                  <p className="mb-6 sm:mb-8 text-xs text-stone-500 font-normal">公司業務簽章</p>
+              {/* 右側：簽章區 */}
+              <div className="flex gap-3 text-center text-stone-900 font-bold justify-end">
+                <div className="border border-stone-300 p-3 rounded-lg bg-stone-50 flex-1 min-w-[120px]">
+                  <p className="mb-6 text-xs text-stone-500 font-normal">公司業務簽章</p>
                   <p className="text-xs text-stone-300 font-normal">（請在此簽名）</p>
                 </div>
-                <div className="border border-stone-300 p-3 sm:p-4 rounded-lg bg-stone-50 flex-1 sm:flex-none min-w-[120px]">
-                  <p className="mb-6 sm:mb-8 text-xs text-stone-500 font-normal">客戶簽章</p>
+                <div className="border border-stone-300 p-3 rounded-lg bg-stone-50 flex-1 min-w-[120px]">
+                  <p className="mb-6 text-xs text-stone-500 font-normal">客戶簽章</p>
                   <p className="text-xs text-stone-300 font-normal">（請在此簽名）</p>
                 </div>
               </div>
