@@ -10,13 +10,13 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @page {
-      size: auto;
-      margin: 10mm 10mm 10mm 10mm;
+      size: A4;
+      margin: 6mm;
     }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; padding: 0 !important; -webkit-print-color-adjust: exact; }
-      .print-area { border: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 0 !important; }
+      .print-area { border: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; padding: 4px !important; }
       .mobile-card-view { display: none !important; }
       .desktop-table-view { display: table !important; }
     }
@@ -71,7 +71,7 @@
         setSales(null);
       };
 
-      // 首頁三專案選擇畫面
+      // 首頁專案選擇畫面
       if (!sales) {
         return (
           <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-100 to-amber-50 p-4">
@@ -243,10 +243,10 @@
       const defaultSpaces = ['客廳', '餐廳', '廚房', '主臥', '房間', '書房', '孝親房', '女兒房', '兒子房'];
 
       return (
-        <div className="max-w-4xl mx-auto p-2 sm:p-4 md:p-8">
+        <div className="max-w-4xl mx-auto p-2 sm:p-4">
           {/* 頂部導覽控制區 */}
-          <div className="no-print mb-4 bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-stone-200 space-y-3">
-            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+          <div className="no-print mb-3 bg-white p-3 rounded-xl shadow-sm border border-stone-200 space-y-2">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <button onClick={backToHome} className="bg-stone-200 text-stone-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-stone-300">
                   🏠 首頁
@@ -269,33 +269,33 @@
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 pt-1 sm:pt-0">
-                <button onClick={syncToCloud} disabled={syncing} className="bg-blue-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-blue-700 shadow text-xs sm:text-sm">
+              <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
+                <button onClick={syncToCloud} disabled={syncing} className="bg-blue-600 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-blue-700 shadow text-xs sm:text-sm">
                   {syncing ? '🔄 同步中...' : '☁️ 雲端同步'}
                 </button>
-                <button onClick={exportCSV} className="bg-emerald-700 text-white px-3 py-2 rounded-lg font-medium hover:bg-emerald-800 shadow text-xs sm:text-sm">
+                <button onClick={exportCSV} className="bg-emerald-700 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-emerald-800 shadow text-xs sm:text-sm">
                   📥 匯出 Excel
                 </button>
-                <button onClick={() => window.print()} className="bg-stone-700 text-white px-3 py-2 rounded-lg font-medium hover:bg-stone-800 shadow text-xs sm:text-sm">
+                <button onClick={() => window.print()} className="bg-stone-700 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-stone-800 shadow text-xs sm:text-sm">
                   🖨️ 列印 / PDF
                 </button>
               </div>
             </div>
           </div>
 
-          {/* 報價單 A4 主體 */}
-          <div className="print-area bg-white p-6 sm:p-10 rounded-xl shadow-lg border border-stone-200">
+          {/* 報價單 A4 主體 (精簡間距以完美單頁呈現) */}
+          <div className="print-area bg-white p-5 sm:p-6 rounded-xl shadow-lg border border-stone-200">
             
             {/* 品牌標題區 */}
-            <div className="text-center pb-5 mb-6 border-b-2 border-stone-800">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-widest text-stone-900">畇朵窗飾規劃</h1>
-              <p className="text-xs sm:text-sm tracking-wider text-amber-800 font-medium mt-1">Cloud Window treatments planning</p>
-              <p className="text-xs tracking-widest text-stone-500 mt-1">窗簾選畇朵 ｜ 空間適得其所</p>
+            <div className="text-center pb-3 mb-4 border-b-2 border-stone-800">
+              <h1 className="text-2xl font-bold tracking-widest text-stone-900">畇朵窗飾規劃</h1>
+              <p className="text-xs tracking-wider text-amber-800 font-medium mt-0.5">Cloud Window treatments planning</p>
+              <p className="text-[11px] tracking-widest text-stone-500 mt-0.5">窗簾選畇朵 ｜ 空間適得其所</p>
             </div>
 
             {/* 客戶基本資料 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 text-sm bg-stone-50/60 p-4 rounded-lg border border-stone-200/60">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 text-xs bg-stone-50/60 p-3 rounded-lg border border-stone-200/60">
+              <div className="space-y-1.5">
                 <p><span className="font-bold text-stone-700">案名：</span>
                   <input value={quote.projectName || ''} onChange={e => updateCurrentQuote({ projectName: e.target.value })} className="no-print border-b px-1 w-40 sm:w-48 font-medium text-stone-900 focus:outline-none focus:border-stone-800 bg-transparent" />
                   <span className="hidden print:inline">{quote.projectName}</span>
@@ -309,7 +309,7 @@
                   <span className="hidden print:inline">{quote.address}</span>
                 </p>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <p><span className="font-bold text-stone-700">日期：</span>
                   <input value={quote.quoteDate || ''} onChange={e => updateCurrentQuote({ quoteDate: e.target.value })} className="no-print border-b px-1 w-32 sm:w-36 font-medium text-stone-900 focus:outline-none focus:border-stone-800 bg-transparent" />
                   <span className="hidden print:inline">{quote.quoteDate}</span>
@@ -323,14 +323,14 @@
             </div>
 
             {/* 📱 手機專屬卡片排版 */}
-            <div className="block md:hidden space-y-3 mb-3 no-print mobile-card-view">
+            <div className="block md:hidden space-y-2 mb-3 no-print mobile-card-view">
               {(quote.items || []).map((item, idx) => {
                 const isNoWidthHeight = item.type === '電機費用' || item.type === '安裝費用';
                 const isTrack = item.type === '軌道';
                 const isCustomSpace = !defaultSpaces.includes(item.space);
 
                 return (
-                  <div key={item.id} className="bg-stone-50 p-3 rounded-xl border border-stone-300 relative space-y-2">
+                  <div key={item.id} className="bg-stone-50 p-2.5 rounded-xl border border-stone-300 relative space-y-1.5">
                     <div className="flex justify-between items-center pb-1 border-b border-stone-200">
                       <span className="font-bold text-stone-900 text-xs">#{idx + 1} 品項</span>
                       <button onClick={() => removeItem(item.id)} className="text-red-500 font-bold px-2 py-0.5 rounded text-xs bg-white border border-red-200">
@@ -368,7 +368,7 @@
 
                     <div>
                       <label className="text-stone-500 block text-xs mb-0.5">品名與算式</label>
-                      <input value={item.name || ''} onChange={e => handleItemChange(item.id, 'name', e.target.value)} placeholder="請輸入品名" className="w-full bg-white border border-stone-300 rounded px-2 py-1 text-sm font-medium mb-1" />
+                      <input value={item.name || ''} onChange={e => handleItemChange(item.id, 'name', e.target.value)} placeholder="請輸入品名" className="w-full bg-white border border-stone-300 rounded px-2 py-1 text-xs font-medium mb-1" />
                       <select value={item.type || '無縫布'} onChange={e => handleItemChange(item.id, 'type', e.target.value)} className="w-full bg-stone-200 text-stone-900 font-semibold rounded px-1.5 py-1 text-xs">
                         <option value="無縫布">無縫布/紗 (算式2)</option>
                         <option value="五尺布">五尺布/紗 (算式3)</option>
@@ -404,7 +404,7 @@
                       </div>
                     </div>
 
-                    <div className="text-right pt-1 font-bold text-stone-900 text-sm border-t border-stone-200">
+                    <div className="text-right pt-1 font-bold text-stone-900 text-xs border-t border-stone-200">
                       小計：${calculateItemAmount(item).toLocaleString()}
                     </div>
                   </div>
@@ -413,18 +413,18 @@
             </div>
 
             {/* 🖥️ 平板與列印專用表格 */}
-            <table className="w-full border-collapse border border-stone-400 mb-2 text-sm hidden md:table desktop-table-view">
+            <table className="w-full border-collapse border border-stone-400 mb-2 text-xs hidden md:table desktop-table-view">
               <thead>
                 <tr style={{ backgroundColor: '#292524', color: '#f5f5f4' }} className="font-bold">
-                  <th className="border border-stone-400 p-2.5 w-20">樓層</th>
-                  <th className="border border-stone-400 p-2.5 w-24">空間</th>
-                  <th className="border border-stone-400 p-2.5 w-1/4">品名</th>
-                  <th className="border border-stone-400 p-2.5 text-center w-14">寬</th>
-                  <th className="border border-stone-400 p-2.5 text-center w-14">高</th>
-                  <th className="border border-stone-400 p-2.5 text-center w-14">單位</th>
-                  <th className="border border-stone-400 p-2.5 text-right w-16">單價</th>
-                  <th className="border border-stone-400 p-2.5 text-right">金額</th>
-                  <th className="border border-stone-400 p-1 w-10 no-print">動作</th>
+                  <th className="border border-stone-400 p-2 w-16">樓層</th>
+                  <th className="border border-stone-400 p-2 w-20">空間</th>
+                  <th className="border border-stone-400 p-2 w-1/4">品名</th>
+                  <th className="border border-stone-400 p-2 text-center w-12">寬</th>
+                  <th className="border border-stone-400 p-2 text-center w-12">高</th>
+                  <th className="border border-stone-400 p-2 text-center w-12">單位</th>
+                  <th className="border border-stone-400 p-2 text-right w-14">單價</th>
+                  <th className="border border-stone-400 p-2 text-right">金額</th>
+                  <th className="border border-stone-400 p-1 w-8 no-print">動作</th>
                 </tr>
               </thead>
               <tbody>
@@ -435,7 +435,7 @@
 
                   return (
                     <tr key={item.id} className="hover:bg-stone-50">
-                      <td className="border border-stone-400 p-1.5">
+                      <td className="border border-stone-400 p-1">
                         <select value={item.floor || '一樓'} onChange={e => handleItemChange(item.id, 'floor', e.target.value)} className="w-full no-print bg-transparent font-medium text-stone-900 focus:outline-none text-xs">
                           <option value="無樓層">無樓層</option>
                           <option value="一樓">一樓</option>
@@ -447,7 +447,7 @@
                         <span className="hidden print:inline text-xs">{item.floor}</span>
                       </td>
 
-                      <td className="border border-stone-400 p-1.5">
+                      <td className="border border-stone-400 p-1">
                         <div className="no-print space-y-1">
                           <select value={isCustomSpace ? 'custom' : (item.space || '客廳')} onChange={e => handleItemChange(item.id, 'space', e.target.value === 'custom' ? '' : e.target.value)} className="w-full bg-transparent font-medium text-stone-900 focus:outline-none text-xs">
                             {defaultSpaces.map(s => <option key={s} value={s}>{s}</option>)}
@@ -460,9 +460,9 @@
                         <span className="hidden print:inline text-xs">{item.space}</span>
                       </td>
 
-                      <td className="border border-stone-400 p-2">
-                        <input value={item.name || ''} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full no-print bg-transparent focus:outline-none font-medium" placeholder="品名" />
-                        <select value={item.type || '無縫布'} onChange={e => handleItemChange(item.id, 'type', e.target.value)} className="w-full no-print bg-stone-100 text-stone-900 rounded px-1 mt-1 font-semibold focus:outline-none text-[11px]">
+                      <td className="border border-stone-400 p-1.5">
+                        <input value={item.name || ''} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full no-print bg-transparent focus:outline-none font-medium text-xs" placeholder="品名" />
+                        <select value={item.type || '無縫布'} onChange={e => handleItemChange(item.id, 'type', e.target.value)} className="w-full no-print bg-stone-100 text-stone-900 rounded px-1 mt-0.5 font-semibold focus:outline-none text-[10px]">
                           <option value="無縫布">無縫布/紗 (算式2)</option>
                           <option value="五尺布">五尺布/紗 (算式3)</option>
                           <option value="捲簾/百葉類">捲簾/百葉 (算式1)</option>
@@ -470,42 +470,42 @@
                           <option value="電機費用">電機費用 (單位×單價)</option>
                           <option value="安裝費用">安裝費用 (單位×單價)</option>
                         </select>
-                        <span className="hidden print:inline font-medium">{item.name}</span>
+                        <span className="hidden print:inline font-medium text-xs">{item.name}</span>
                       </td>
 
-                      <td className="border border-stone-400 p-2 text-center">
+                      <td className="border border-stone-400 p-1.5 text-center">
                         {!isNoWidthHeight ? (
                           <>
-                            <input type="number" step="0.1" value={item.width ?? ''} onChange={e => handleItemChange(item.id, 'width', e.target.value)} className="w-14 text-center no-print bg-transparent focus:outline-none" />
-                            <span className="hidden print:inline">{item.width}</span>
+                            <input type="number" step="0.1" value={item.width ?? ''} onChange={e => handleItemChange(item.id, 'width', e.target.value)} className="w-12 text-center no-print bg-transparent focus:outline-none text-xs" />
+                            <span className="hidden print:inline text-xs">{item.width}</span>
                           </>
                         ) : <span className="text-stone-300">-</span>}
                       </td>
 
-                      <td className="border border-stone-400 p-2 text-center">
+                      <td className="border border-stone-400 p-1.5 text-center">
                         {!isNoWidthHeight && !isTrack ? (
                           <>
-                            <input type="number" step="0.1" value={item.height ?? ''} onChange={e => handleItemChange(item.id, 'height', e.target.value)} className="w-14 text-center no-print bg-transparent focus:outline-none" />
-                            <span className="hidden print:inline">{item.height}</span>
+                            <input type="number" step="0.1" value={item.height ?? ''} onChange={e => handleItemChange(item.id, 'height', e.target.value)} className="w-12 text-center no-print bg-transparent focus:outline-none text-xs" />
+                            <span className="hidden print:inline text-xs">{item.height}</span>
                           </>
                         ) : <span className="text-stone-300">-</span>}
                       </td>
 
-                      <td className="border border-stone-400 p-2 text-center">
+                      <td className="border border-stone-400 p-1.5 text-center">
                         {isNoWidthHeight ? (
                           <>
-                            <input type="number" value={item.qty ?? 1} onChange={e => handleItemChange(item.id, 'qty', e.target.value)} className="w-14 text-center no-print bg-stone-100 rounded focus:outline-none font-bold" />
-                            <span className="hidden print:inline">{item.qty ?? 1}</span>
+                            <input type="number" value={item.qty ?? 1} onChange={e => handleItemChange(item.id, 'qty', e.target.value)} className="w-12 text-center no-print bg-stone-100 rounded focus:outline-none font-bold text-xs" />
+                            <span className="hidden print:inline text-xs">{item.qty ?? 1}</span>
                           </>
                         ) : <span className="text-stone-300">-</span>}
                       </td>
 
-                      <td className="border border-stone-400 p-2 text-right">
-                        <input type="number" value={item.price ?? ''} onChange={e => handleItemChange(item.id, 'price', e.target.value)} className="w-16 text-right no-print bg-transparent focus:outline-none" />
-                        <span className="hidden print:inline">{Number(item.price || 0).toLocaleString()}</span>
+                      <td className="border border-stone-400 p-1.5 text-right">
+                        <input type="number" value={item.price ?? ''} onChange={e => handleItemChange(item.id, 'price', e.target.value)} className="w-14 text-right no-print bg-transparent focus:outline-none text-xs" />
+                        <span className="hidden print:inline text-xs">{Number(item.price || 0).toLocaleString()}</span>
                       </td>
 
-                      <td className="border border-stone-400 p-2 text-right font-medium">
+                      <td className="border border-stone-400 p-1.5 text-right font-medium text-xs">
                         {calculateItemAmount(item).toLocaleString()}
                       </td>
 
@@ -518,21 +518,21 @@
               </tbody>
             </table>
 
-            {/* 新增品項按鈕固定在表格正下方 */}
-            <div className="no-print mb-6 text-center">
+            {/* 新增品項按鈕 */}
+            <div className="no-print mb-4 text-center">
               <button 
                 onClick={addItem} 
-                className="w-full py-3 bg-stone-800 hover:bg-stone-900 text-white font-bold rounded-xl shadow transition duration-200 text-sm flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-stone-800 hover:bg-stone-900 text-white font-bold rounded-xl shadow transition duration-200 text-xs flex items-center justify-center gap-2"
               >
                 ➕ 新增品項
               </button>
             </div>
 
             {/* 金額與條款 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 border border-stone-400 text-xs mb-6">
-              <div className="md:col-span-2 p-3 border-b md:border-b-0 md:border-r border-stone-400 bg-stone-50 leading-relaxed">
-                <p className="font-bold text-sm mb-1 text-stone-900">為確保雙方權益及服務品質，相關合作條款如下：</p>
-                <ol className="list-decimal list-inside space-y-1 text-stone-700">
+            <div className="grid grid-cols-1 md:grid-cols-3 border border-stone-400 text-[11px] mb-4">
+              <div className="md:col-span-2 p-2.5 border-b md:border-b-0 md:border-r border-stone-400 bg-stone-50 leading-relaxed">
+                <p className="font-bold text-xs mb-1 text-stone-900">為確保雙方權益及服務品質，相關合作條款如下：</p>
+                <ol className="list-decimal list-inside space-y-0.5 text-stone-700">
                   <li>付款方式：僅提供現金、匯款或即期支票。</li>
                   <li>收款：訂單確認後，須回簽本報價單並支付訂金 50%，以利安排生產與施工時程，完工收 50%。</li>
                   <li>客製商品說明：本報價單所列項目皆為客製化訂製品，恕不接受退訂或更改。</li>
@@ -541,26 +541,26 @@
                 </ol>
               </div>
               <div className="md:col-span-1 flex flex-col justify-between">
-                <div className="flex justify-between p-3 border-b border-stone-400 font-bold bg-stone-200 text-sm text-stone-900">
+                <div className="flex justify-between p-2.5 border-b border-stone-400 font-bold bg-stone-200 text-xs text-stone-900">
                   <span>總計：</span>
                   <span>${calculateSubtotal().toLocaleString()}</span>
                 </div>
-                <div className="p-3 bg-stone-100 h-full flex flex-col justify-center">
-                  <div className="flex justify-between items-center mb-1 font-bold text-stone-900 text-sm">
+                <div className="p-2.5 bg-stone-100 h-full flex flex-col justify-center">
+                  <div className="flex justify-between items-center mb-1 font-bold text-stone-900 text-xs">
                     <span>優惠價含稅：</span>
-                    <input type="number" value={quote.customDiscountedTotal ?? ''} onChange={e => updateCurrentQuote({ customDiscountedTotal: e.target.value })} className="w-24 text-right border border-stone-300 rounded px-1 no-print font-bold text-stone-900 bg-white" />
+                    <input type="number" value={quote.customDiscountedTotal ?? ''} onChange={e => updateCurrentQuote({ customDiscountedTotal: e.target.value })} className="w-20 text-right border border-stone-300 rounded px-1 no-print font-bold text-stone-900 bg-white text-xs" />
                     <span className="hidden print:inline">${totalAmount.toLocaleString()}</span>
                   </div>
-                  <p className="text-xs font-semibold text-stone-700 text-right mt-2">
+                  <p className="text-[11px] font-semibold text-stone-700 text-right mt-1">
                     50% 訂金金額：${depositAmount.toLocaleString()}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* 底部聯絡資訊（可直接修改規劃師姓名、電話、LINE）與簽章區 */}
-            <div className="pt-4 border-t-2 border-stone-400 text-sm flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-              <div className="space-y-1 text-stone-700 text-xs sm:text-sm">
+            {/* 底部聯絡資訊與簽章區（精簡高度維持單頁） */}
+            <div className="pt-3 border-t-2 border-stone-400 text-xs flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3">
+              <div className="space-y-1 text-stone-700 text-[11px] sm:text-xs">
                 <p className="font-bold text-stone-900 flex items-center gap-1">
                   <span>畇朵窗飾規劃 ｜ 窗飾規劃師：</span>
                   <input 
@@ -575,7 +575,7 @@
                   <input 
                     value={quote.salesPhone ?? '0978-221-726'} 
                     onChange={e => updateCurrentQuote({ salesPhone: e.target.value })} 
-                    className="no-print border-b px-1 w-32 font-medium text-stone-800 bg-transparent focus:outline-none" 
+                    className="no-print border-b px-1 w-28 font-medium text-stone-800 bg-transparent focus:outline-none" 
                   />
                   <span className="hidden print:inline">{quote.salesPhone ?? '0978-221-726'}</span>
                 </p>
@@ -584,21 +584,21 @@
                   <input 
                     value={quote.salesLine ?? 'bella19941110'} 
                     onChange={e => updateCurrentQuote({ salesLine: e.target.value })} 
-                    className="no-print border-b px-1 w-32 font-medium text-stone-800 bg-transparent focus:outline-none" 
+                    className="no-print border-b px-1 w-28 font-medium text-stone-800 bg-transparent focus:outline-none" 
                   />
                   <span className="hidden print:inline">{quote.salesLine ?? 'bella19941110'}</span>
                   <span className="ml-1">｜ 🏦 103 新光銀行新營分行 (0541-10-1004306)</span>
                 </p>
               </div>
 
-              <div className="flex gap-4 sm:gap-6 text-center text-stone-900 font-bold w-full sm:w-auto justify-between sm:justify-end">
-                <div className="border border-stone-300 p-3 sm:p-4 rounded-lg bg-stone-50 flex-1 sm:flex-none min-w-[130px]">
-                  <p className="mb-6 sm:mb-8 text-xs text-stone-500 font-normal">公司業務簽章</p>
-                  <p className="text-xs sm:text-sm text-stone-300 font-normal">（請在此簽名）</p>
+              <div className="flex gap-3 text-center text-stone-900 font-bold w-full sm:w-auto justify-between sm:justify-end">
+                <div className="border border-stone-300 p-2.5 rounded-lg bg-stone-50 flex-1 sm:flex-none min-w-[110px]">
+                  <p className="mb-4 text-[11px] text-stone-500 font-normal">公司業務簽章</p>
+                  <p className="text-[11px] text-stone-300 font-normal">（請在此簽名）</p>
                 </div>
-                <div className="border border-stone-300 p-3 sm:p-4 rounded-lg bg-stone-50 flex-1 sm:flex-none min-w-[130px]">
-                  <p className="mb-6 sm:mb-8 text-xs text-stone-500 font-normal">客戶簽章</p>
-                  <p className="text-xs sm:text-sm text-stone-300 font-normal">（請在此簽名）</p>
+                <div className="border border-stone-300 p-2.5 rounded-lg bg-stone-50 flex-1 sm:flex-none min-w-[110px]">
+                  <p className="mb-4 text-[11px] text-stone-500 font-normal">客戶簽章</p>
+                  <p className="text-[11px] text-stone-300 font-normal">（請在此簽名）</p>
                 </div>
               </div>
             </div>
