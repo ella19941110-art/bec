@@ -34,14 +34,11 @@
         paymentMethod: '現金/匯款/即期支票',
         salesRep: 'Bella',
         items: [
-          { id: '101', category: '正面彎軌', name: '100%物理遮光素色布', qty: 66, price: 440 },
-          { id: '102', category: '彎軌正面軌道', name: '緹花面無縫布', qty: 66, price: 440 },
-          { id: '103', category: '房間', name: '壓花80%遮光布', qty: 12, price: 160 },
-          { id: '104', category: '軌道', name: '鋁合金M6手撥軌道', qty: 5, price: 70 },
-          { id: '105', category: '高空', name: '高空梯含安裝費用', qty: 1, price: 3500 },
-          { id: '106', category: '', name: '免高空費用/同社區介紹', qty: 1, price: -3500 },
+          { id: '101', name: '100%物理遮光素色布', type: '無縫布', width: 7, height: 8.4, price: 360 },
+          { id: '102', name: '鋁合金M6手撥軌道', type: '軌道', width: 7, height: 0, price: 70 },
+          { id: '103', name: '調光捲簾', type: '捲簾/百葉類', width: 5.1, height: 6.2, price: 240 },
         ],
-        customDiscountedTotal: 54000,
+        customDiscountedTotal: '',
         salesSignature: ''
       }
     ];
@@ -68,7 +65,38 @@
         setQuotes(quotes.map(q => q.id === currentId ? { ...q, ...updatedFields } : q));
       };
 
-      const calculateSubtotal = () => quote.items.reduce((sum, item) => sum + (Number(item.qty || 0) * Number(item.price || 0)), 0);
+      // 智慧計算單一品項金額
+      const calculateItemAmount = (item) => {
+        const w = Number(item.width) || 0;
+        const h = Number(item.height) || 0;
+        const p = Number(item.price) || 0;
+        const ceilW = Math.ceil(w);
+        const ceilH = Math.ceil(h);
+
+        if (item.type === '軌道') {
+          // 軌道：寬(進位) * 單價
+          return ceilW * p;
+        } else if (item.type === '捲簾/百葉類') {
+          // 捲簾類：寬(進位) * 高(進位) * 單價
+          const cals = Math.max(1, ceilW) * Math.max(1, ceilH);
+          return cals * p;
+        } else if (item.type === '無縫布' || item.type === '無縫紗') {
+          // 無縫布/紗：寬(進位) * 2 * 單價 (若高度>9尺挑高，價格x2)
+          let base = ceilW * 2 * p;
+          if (h > 9) base *= 2;
+          return base;
+        } else if (item.type === '五尺布' || item.type === '五尺紗') {
+          // 五尺布/紗：(寬(進位)+1) * 2 * (單價*2) (若高度>9尺挑高，價格x2)
+          let base = (ceilW + 1) * 2 * (p * 2);
+          if (h > 9) base *= 2;
+          return base;
+        } else {
+          // 預設手動金額或一般計算
+          return ceilW * p;
+        }
+      };
+
+      const calculateSubtotal = () => quote.items.reduce((sum, item) => sum + calculateItemAmount(item), 0);
       const totalAmount = quote.customDiscountedTotal !== '' ? Number(quote.customDiscountedTotal) : calculateSubtotal();
       const depositAmount = Math.round(totalAmount * 0.5);
 
@@ -78,7 +106,7 @@
       };
 
       const addItem = () => {
-        const newItems = [...quote.items, { id: Date.now().toString(), category: '', name: '', qty: 1, price: 0 }];
+        const newItems = [...quote.items, { id: Date.now().toString(), name: '新窗簾品項', type: '無縫布', width: 6, height: 8, price: 360 }];
         updateCurrentQuote({ items: newItems });
       };
 
@@ -97,7 +125,7 @@
           quoteDate: new Date().toLocaleDateString('zh-TW', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '/'),
           paymentMethod: '現金/匯款/即期支票',
           salesRep: 'Bella',
-          items: [{ id: Date.now() + 1, category: '品項', name: '窗簾布', qty: 10, price: 400 }],
+          items: [{ id: Date.now() + 1, name: '遮光布', type: '無縫布', width: 6, height: 8, price: 360 }],
           customDiscountedTotal: '',
           salesSignature: ''
         };
@@ -120,9 +148,9 @@
       const exportCSV = () => {
         let csvContent = "\uFEFF案名,聯絡電話,地址,報價日期,業務,總金額,50%訂金\n";
         csvContent += `"${quote.projectName}","${quote.phone}","${quote.address}","${quote.quoteDate}","${quote.salesRep}",${totalAmount},${depositAmount}\n\n`;
-        csvContent += "項目,品名,數量,單價,小計\n";
+        csvContent += "品項類型,品名,寬(尺),高(尺),單價,小計\n";
         quote.items.forEach(item => {
-          csvContent += `"${item.category}","${item.name}",${item.qty},${item.price},${Number(item.qty||0)*Number(item.price||0)}\n`;
+          csvContent += `"${item.type}","${item.name}",${item.width},${item.height},${item.price},${calculateItemAmount(item)}\n`;
         });
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -239,14 +267,15 @@
               </div>
             </div>
 
-            {/* 品項明細表格 */}
+            {/* 品項明細表格（包含 寬 x 高 與 算式類型選擇） */}
             <table className="w-full border-collapse border border-gray-400 mb-6 text-sm">
               <thead>
                 <tr style={{ backgroundColor: '#c8b284' }} className="text-gray-900 font-bold">
-                  <th className="border border-gray-400 p-2 w-1/6">項目</th>
-                  <th className="border border-gray-400 p-2 w-2/5">品名</th>
-                  <th className="border border-gray-400 p-2 text-center">數量</th>
-                  <th className="border border-gray-400 p-2 text-right">單價</th>
+                  <th className="border border-gray-400 p-2 w-1/5">計算類型</th>
+                  <th className="border border-gray-400 p-2 w-1/4">品名</th>
+                  <th className="border border-gray-400 p-2 text-center w-16">寬(尺)</th>
+                  <th className="border border-gray-400 p-2 text-center w-16">高(尺)</th>
+                  <th className="border border-gray-400 p-2 text-right w-20">單價</th>
                   <th className="border border-gray-400 p-2 text-right">金額</th>
                   <th className="border border-gray-400 p-1 w-10 no-print">動作</th>
                 </tr>
@@ -255,23 +284,36 @@
                 {quote.items.map((item) => (
                   <tr key={item.id} className="hover:bg-amber-50/30">
                     <td className="border border-gray-400 p-2">
-                      <input value={item.category} onChange={e => handleItemChange(item.id, 'category', e.target.value)} className="w-full no-print bg-transparent focus:outline-none" />
-                      <span className="hidden print:inline">{item.category}</span>
+                      <select 
+                        value={item.type} 
+                        onChange={e => handleItemChange(item.id, 'type', e.target.value)}
+                        className="w-full no-print bg-transparent font-medium text-amber-950 focus:outline-none text-xs"
+                      >
+                        <option value="無縫布">無縫布/紗 (算式2)</option>
+                        <option value="五尺布">五尺布/紗 (算式3)</option>
+                        <option value="捲簾/百葉類">捲簾/百葉 (算式1)</option>
+                        <option value="軌道">軌道 (僅寬×單價)</option>
+                      </select>
+                      <span className="hidden print:inline">{item.type}</span>
                     </td>
                     <td className="border border-gray-400 p-2">
                       <input value={item.name} onChange={e => handleItemChange(item.id, 'name', e.target.value)} className="w-full no-print bg-transparent focus:outline-none" />
                       <span className="hidden print:inline">{item.name}</span>
                     </td>
                     <td className="border border-gray-400 p-2 text-center">
-                      <input type="number" value={item.qty} onChange={e => handleItemChange(item.id, 'qty', e.target.value)} className="w-16 text-center no-print bg-transparent focus:outline-none" />
-                      <span className="hidden print:inline">{item.qty}</span>
+                      <input type="number" step="0.1" value={item.width} onChange={e => handleItemChange(item.id, 'width', e.target.value)} className="w-16 text-center no-print bg-transparent focus:outline-none" />
+                      <span className="hidden print:inline">{item.width}</span>
+                    </td>
+                    <td className="border border-gray-400 p-2 text-center">
+                      <input type="number" step="0.1" value={item.height} onChange={e => handleItemChange(item.id, 'height', e.target.value)} disabled={item.type === '軌道'} className={`w-16 text-center no-print bg-transparent focus:outline-none ${item.type === '軌道' ? 'opacity-30' : ''}`} />
+                      <span className="hidden print:inline">{item.type === '軌道' ? '-' : item.height}</span>
                     </td>
                     <td className="border border-gray-400 p-2 text-right">
                       <input type="number" value={item.price} onChange={e => handleItemChange(item.id, 'price', e.target.value)} className="w-20 text-right no-print bg-transparent focus:outline-none" />
                       <span className="hidden print:inline">{Number(item.price).toLocaleString()}</span>
                     </td>
                     <td className="border border-gray-400 p-2 text-right font-medium">
-                      {(Number(item.qty || 0) * Number(item.price || 0)).toLocaleString()}
+                      {calculateItemAmount(item).toLocaleString()}
                     </td>
                     <td className="border border-gray-400 p-1 text-center no-print">
                       <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700 font-bold">✕</button>
@@ -339,3 +381,4 @@
   </script>
 </body>
 </html>
+
