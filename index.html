@@ -28,15 +28,12 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby85W4jwh67qbZHOifLiRrkYjk96BD2YeUdFv-AXSGgXZWLKH2teiXZxc6eHWsV35jUfw/exec";
-
     function App() {
       const [sales, setSales] = useState(null);
       const STORAGE_KEY = sales ? `yunduo_quotes_${sales}` : 'yunduo_all_quotes';
 
       const [quotes, setQuotes] = useState([]);
       const [currentId, setCurrentId] = useState('');
-      const [syncing, setSyncing] = useState(false);
 
       useEffect(() => {
         if (sales) {
@@ -102,7 +99,7 @@
                   🧑‍💼 金貴專案
                 </button>
               </div>
-              <p className="text-xs text-gray-400 pt-2">雲端報價系統 ｜ 手機與平板完美適配</p>
+              <p className="text-xs text-gray-400 pt-2">報價系統 ｜ 手機與平板完美適配</p>
             </div>
           </div>
         );
@@ -211,35 +208,6 @@
         document.body.removeChild(link);
       };
 
-      const syncToCloud = () => {
-        setSyncing(true);
-        const payload = {
-          projectName: quote.projectName,
-          phone: quote.phone,
-          address: quote.address,
-          quoteDate: quote.quoteDate,
-          salesRep: quote.salesRep || sales,
-          totalAmount: totalAmount,
-          depositAmount: depositAmount
-        };
-
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
-        .then(() => {
-          setSyncing(false);
-          alert(`🎉 成功將「${quote.projectName}」上傳至 Google 雲端總表！`);
-        })
-        .catch(err => {
-          setSyncing(false);
-          console.error(err);
-          alert("同步時發生錯誤，請稍後重試。");
-        });
-      };
-
       const defaultSpaces = ['客廳', '餐廳', '廚房', '主臥', '房間', '書房', '孝親房', '女兒房', '兒子房'];
 
       return (
@@ -269,10 +237,7 @@
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 pt-1 sm:pt-0">
-                <button onClick={syncToCloud} disabled={syncing} className="bg-blue-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-blue-700 shadow text-xs sm:text-sm">
-                  {syncing ? '🔄 同步中...' : '☁️ 雲端同步'}
-                </button>
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 pt-1 sm:pt-0">
                 <button onClick={exportCSV} className="bg-emerald-700 text-white px-3 py-2 rounded-lg font-medium hover:bg-emerald-800 shadow text-xs sm:text-sm">
                   📥 匯出 Excel
                 </button>
